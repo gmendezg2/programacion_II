@@ -29,6 +29,17 @@ public class Factura {
     }
     
    
-    
+    public void consultarFactura() {
+        System.out.println("Factura #" + IdFactura + " | Fecha: " + FechaFactura);
+        System.out.println("Cliente: " + Clientes.getNombreCliente() + " " + Clientes.getApellidoCliente());
+        System.out.println("Estado: " + (Anulada ? "ANULADA" : "ACTIVA"));
+        System.out.println("Detalles:");
+        double total = 0;
+        for (DetalleFactura d : DetalleFactura) {
+            d.mostrarDetalle();
+            total += d.calcularSubtotal();
+        }
+        System.out.println("TOTAL: Q" + total);
+    }
     
 }
