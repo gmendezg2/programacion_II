@@ -13,15 +13,16 @@
             <h:panelGrid columns="2" cellpadding="5">
 
                 <h:outputLabel for="username" value="Usuario:" />
-                <p:inputText id="username" required="true"
+                <p:inputText id="username" value="#{loginBean.username}" required="true"
                              requiredMessage="El usuario es obligatorio" />
 
                 <h:outputLabel for="password" value="Contraseña:" />
-                <p:password id="password" feedback="false" required="true"
+                <p:password id="password" value="#{loginBean.password}" feedback="false" required="true"
                             requiredMessage="La contraseña es obligatoria" />
 
                 <h:outputLabel />
-                <p:commandButton value="Ingresar" update="messages" />
+                <p:commandButton value="Ingresar" action="#{loginBean.login()}"
+                                 update="messages" />
             </h:panelGrid>
         </p:panel>
     </h:form>
