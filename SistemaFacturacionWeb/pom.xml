@@ -24,11 +24,16 @@
             <artifactId>primefaces</artifactId>
             <version>16.0.0</version>
         </dependency> 
-            <dependency>
-                <groupId>org.primefaces</groupId>
-                <artifactId>primefaces-themes</artifactId>
-                <version>16.0.0</version>
-            </dependency>        
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces-themes</artifactId>
+            <version>16.0.0</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.7</version>
+        </dependency>
     </dependencies>
     
     <build>
