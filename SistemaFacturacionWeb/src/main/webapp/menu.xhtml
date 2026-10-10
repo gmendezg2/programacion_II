@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Menú Principal - Sistema de Facturación</title>
+</h:head>
+<h:body>
+    <h:form>
+        <p:growl id="messages" showDetail="true" />
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h:outputText value="Bienvenido, #{sessionScope.usuario}"
+                          style="font-size:18px; font-weight:bold;" />
+            <p:commandButton value="Cerrar Sesión" icon="pi pi-sign-out"
+                             action="#{loginBean.cerrarSesion}" ajax="false" />
+        </div>
+
+        <p:menubar style="margin-top:10px;">
+            <p:menuitem value="Inicio" icon="pi pi-home" url="#" />
+
+            <p:submenu label="Facturación" icon="pi pi-file">
+                <p:menuitem value="Nueva Factura" icon="pi pi-plus" url="#" />
+                <p:menuitem value="Consultar Facturas" icon="pi pi-search" url="#" />
+                <p:menuitem value="Anular Factura" icon="pi pi-times-circle" url="#" />
+            </p:submenu>
+
+            <p:submenu label="Mantenimiento" icon="pi pi-cog">
+                <p:menuitem value="Clientes" icon="pi pi-users" url="#" />
+                <p:menuitem value="Productos" icon="pi pi-box" url="#" />
+                <p:menuitem value="Usuarios" icon="pi pi-user" url="#" />
+            </p:submenu>
+
+            <p:submenu label="Reportes" icon="pi pi-chart-bar">
+                <p:menuitem value="Reporte de Ventas" icon="pi pi-chart-line" url="#" />
+                <p:menuitem value="Reporte de Inventario" icon="pi pi-list" url="#" />
+            </p:submenu>
+
+            <p:submenu label="Sesión" icon="pi pi-user">
+                <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"
+                            action="#{loginBean.cerrarSesion}" ajax="false" />
+            </p:submenu>
+        </p:menubar>
+
+        <p:panel header="Panel Principal" style="margin-top:20px;">
+            <p:panelGrid columns="2" layout="grid" cellpadding="10">
+                <p:card>
+                    <f:facet name="title">Facturación</f:facet>
+                    <h:outputText value="Emisión y consulta de facturas." />
+                </p:card>
+                <p:card>
+                    <f:facet name="title">Mantenimiento</f:facet>
+                    <h:outputText value="Gestión de clientes, productos y usuarios." />
+                </p:card>
+                <p:card>
+                    <f:facet name="title">Reportes</f:facet>
+                    <h:outputText value="Información de ventas e inventario." />
+                </p:card>
+                <p:card>
+                    <f:facet name="title">Sesión</f:facet>
+                    <h:outputText value="Usuario activo: #{sessionScope.usuario}" />
+                </p:card>
+            </p:panelGrid>
+        </p:panel>
+    </h:form>
+</h:body>
+</html>
