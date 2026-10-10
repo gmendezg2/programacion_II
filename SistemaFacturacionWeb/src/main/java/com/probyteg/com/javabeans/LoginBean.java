@@ -10,12 +10,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Named
 @ViewScoped
 public class LoginBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger LOGGER = Logger.getLogger(LoginBean.class.getName());
 
     private static final String CONSULTA =
             "SELECT id_usuario, nombre_usuario, estado_usuario "
@@ -41,24 +45,33 @@ public class LoginBean implements Serializable {
         this.password = password;
     }
 
-    public void login() {
+    public String login() {
         String usuario = username == null ? "" : username.trim();
         String clave = password == null ? "" : password;
 
         if (usuario.isEmpty() || clave.isEmpty()) {
             mensajeError("Credenciales inválidas");
-            return;
+            return null;
         }
 
         try {
             if (autenticar(usuario, clave)) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido", usuario));
-            } else {
-                mensajeError("Credenciales inválidas o usuario inactivo");
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .getSessionMap().put("usuario", usuario);
+                return "menu?faces-redirect=true";
             }
+            mensajeError("Credenciales inválidas o usuario inactivo");
+            return null;
         } catch (SQLException e) {
-            mensajeError("No se pudo conectar con la base de datos");
+            LOGGER.log(Level.SEVERE, "Error de base de datos al autenticar", e);
+            String detalle = "No se pudo conectar con la base de datos";
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            if (ctx.getApplication().getProjectStage()
+                    == jakarta.faces.application.ProjectStage.Development) {
+                detalle += ": " + e.getMessage();
+            }
+            mensajeError(detalle);
+            return null;
         }
     }
 
@@ -86,11 +99,17 @@ public class LoginBean implements Serializable {
         }
         String e = estado.trim();
         return "1".equals(e) || "t".equalsIgnoreCase(e)
-                || "true".equalsIgnoreCase(e) || "s".equalsIgnoreCase(e);
+                || "true".equalsIgnoreCase(e) || "s".equalsIgnoreCase(e)
+                || "a".equalsIgnoreCase(e) || "activo".equalsIgnoreCase(e);
     }
 
     private void mensajeError(String detalle) {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", detalle));
+    }
+
+    public String cerrarSesion() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return "index?faces-redirect=true";
     }
 }
