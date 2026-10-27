@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Consultar Facturas - Sistema de Facturación</title>
+</h:head>
+<h:body>
+    <h:form>
+        <p:growl id="messages" showDetail="true" />
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h:outputText value="Consulta de Facturas" style="font-size:20px; font-weight:bold;" />
+            <p:button value="Volver al Menú" icon="pi pi-arrow-left" outcome="menu?faces-redirect=true" />
+        </div>
+
+        <p:panel header="Filtros de Búsqueda" style="margin-top:15px;">
+            <h:panelGrid columns="8" cellpadding="5">
+                <h:outputLabel for="fSerie" value="Serie:" />
+                <p:inputText id="fSerie" value="#{facturaBean.filtroSerie}" />
+
+                <h:outputLabel for="fNum" value="No. Factura:" />
+                <p:inputNumber id="fNum" value="#{facturaBean.filtroNumFactura}" decimalPlaces="0" />
+
+                <h:outputLabel for="fCliente" value="Cliente:" />
+                <p:inputNumber id="fCliente" value="#{facturaBean.filtroIdCliente}" decimalPlaces="0" />
+
+                <h:outputLabel for="fEstado" value="Estado:" />
+                <p:selectOneMenu id="fEstado" value="#{facturaBean.filtroEstado}">
+                    <f:selectItem itemLabel="-- Todos --" itemValue="" />
+                    <f:selectItem itemLabel="Activa" itemValue="A" />
+                    <f:selectItem itemLabel="Anulada" itemValue="N" />
+                </p:selectOneMenu>
+            </h:panelGrid>
+            <f:facet name="footer">
+                <p:commandButton value="Buscar" icon="pi pi-search"
+                                 action="#{facturaBean.buscar()}" update="messages pnlFacturas" />
+                <p:commandButton value="Limpiar" icon="pi pi-filter-slash" immediate="true"
+                                 action="#{facturaBean.limpiarFiltros()}" update="messages pnlFacturas"
+                                 style="margin-left:5px;" />
+            </f:facet>
+        </p:panel>
+
+        <p:panel id="pnlFacturas" header="Resultados" style="margin-top:15px;">
+            <p:dataTable id="tablaFacturas" value="#{facturaBean.facturas}" var="factura"
+                         emptyMessage="No se encontraron facturas.">
+
+                <p:column selectionMode="single" style="width:30px" />
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{factura.idFactura}" />
+                </p:column>
+                <p:column headerText="Serie">
+                    <h:outputText value="#{factura.serieFactura}" />
+                </p:column>
+                <p:column headerText="No. Factura">
+                    <h:outputText value="#{factura.numFactura}" />
+                </p:column>
+                <p:column headerText="Cliente">
+                    <h:outputText value="#{factura.idCliente}" />
+                </p:column>
+                <p:column headerText="Fecha">
+                    <h:outputText value="#{factura.fechaHoraFactura}">
+                        <f:convertDateTime type="both" pattern="dd/MM/yyyy HH:mm" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Estado">
+                    <p:tag value="#{factura.estaAnulada() ? 'Anulada' : 'Activa'}"
+                           severity="#{factura.estaAnulada() ? 'danger' : 'success'}" />
+                </p:column>
+                <p:column headerText="Total">
+                    <h:outputText value="#{factura.total}">
+                        <f:convertNumber type="currency" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="" style="width:120px; text-align:center;">
+                    <p:commandButton icon="pi pi-eye" title="Ver detalles" ajax="true"
+                                     action="#{facturaBean.cargarDetalles(factura)}"
+                                     update="dlgDetalles"
+                                     oncomplete="PF('dlgDetalles').show()" />
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:dialog header="Detalles de la Factura" widgetVar="dlgDetalles" modal="true"
+                  width="700" appendTo="@(body)">
+            <p:dataTable id="tablaDetalles" value="#{facturaBean.detallesEnConsulta}" var="det"
+                         emptyMessage="Sin detalles registrados.">
+                <p:column headerText="Producto">
+                    <h:outputText value="#{det.idProducto}" />
+                </p:column>
+                <p:column headerText="Descripción">
+                    <h:outputText value="#{det.descripcionProducto}" />
+                </p:column>
+                <p:column headerText="Cantidad">
+                    <h:outputText value="#{det.cantidad}" />
+                </p:column>
+                <p:column headerText="Precio">
+                    <h:outputText value="#{det.precioProducto}">
+                        <f:convertNumber type="currency" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Subtotal">
+                    <h:outputText value="#{det.subtotal}">
+                        <f:convertNumber type="currency" />
+                    </h:outputText>
+                </p:column>
+            </p:dataTable>
+        </p:dialog>
+    </h:form>
+</h:body>
+</html>

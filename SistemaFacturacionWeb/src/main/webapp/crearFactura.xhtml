@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Nueva Factura - Sistema de Facturación</title>
+</h:head>
+<h:body>
+    <h:form>
+        <p:growl id="messages" showDetail="true" />
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h:outputText value="Nueva Factura" style="font-size:20px; font-weight:bold;" />
+            <p:button value="Volver al Menú" icon="pi pi-arrow-left" outcome="menu?faces-redirect=true" />
+        </div>
+
+        <p:panel header="Datos de la Factura" style="margin-top:15px;">
+            <h:panelGrid columns="6" cellpadding="5">
+                <h:outputLabel for="serie" value="Serie:" />
+                <p:inputText id="serie" value="#{facturaBean.serieFactura}" required="true"
+                             requiredMessage="La serie es obligatoria" maxlength="75" />
+
+                <h:outputLabel for="numFactura" value="No. Factura:" />
+                <p:inputNumber id="numFactura" value="#{facturaBean.numFactura}" required="true"
+                               requiredMessage="El número de factura es obligatorio" decimalPlaces="0" />
+
+                <h:outputLabel for="idCliente" value="No. Cliente:" />
+                <p:inputNumber id="idCliente" value="#{facturaBean.idCliente}" required="true"
+                               requiredMessage="El cliente es obligatorio" decimalPlaces="0" />
+            </h:panelGrid>
+        </p:panel>
+
+        <p:panel header="Agregar Detalle" style="margin-top:15px;">
+            <h:panelGrid columns="8" cellpadding="5">
+                <h:outputLabel for="idProducto" value="ID Producto:" />
+                <p:inputNumber id="idProducto" value="#{facturaBean.idProducto}" decimalPlaces="0" />
+
+                <h:outputLabel for="descripcion" value="Descripción:" />
+                <p:inputText id="descripcion" value="#{facturaBean.descripcionProducto}" />
+
+                <h:outputLabel for="cantidad" value="Cantidad:" />
+                <p:inputNumber id="cantidad" value="#{facturaBean.cantidad}" decimalPlaces="0" />
+
+                <h:outputLabel for="precio" value="Precio:" />
+                <p:inputNumber id="precio" value="#{facturaBean.precioProducto}" />
+
+                <f:facet name="footer">
+                    <p:commandButton value="Agregar Detalle" icon="pi pi-plus"
+                                     action="#{facturaBean.agregarDetalle()}"
+                                     update="messages pnlDetalles" />
+                </f:facet>
+            </h:panelGrid>
+        </p:panel>
+
+        <p:panel id="pnlDetalles" header="Detalles de la Factura" style="margin-top:15px;">
+            <p:dataTable id="tablaDetalles" value="#{facturaBean.detalles}" var="detalle"
+                         emptyMessage="Sin detalles agregados.">
+                <p:column headerText="ID Producto">
+                    <h:outputText value="#{detalle.idProducto}" />
+                </p:column>
+                <p:column headerText="Descripción">
+                    <h:outputText value="#{detalle.descripcionProducto}" />
+                </p:column>
+                <p:column headerText="Cantidad">
+                    <h:outputText value="#{detalle.cantidad}" />
+                </p:column>
+                <p:column headerText="Precio">
+                    <h:outputText value="#{detalle.precioProducto}">
+                        <f:convertNumber type="currency" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Subtotal">
+                    <h:outputText value="#{detalle.subtotal}">
+                        <f:convertNumber type="currency" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="" style="width:80px; text-align:center;">
+                    <p:commandButton icon="pi pi-trash" title="Eliminar"
+                                     action="#{facturaBean.eliminarDetalle(detalle)}"
+                                     update="messages pnlDetalles" />
+                </p:column>
+                <f:facet name="footer">
+                    <h:panelGroup>
+                        <strong>Total: </strong>
+                        <h:outputText value="#{facturaBean.totalDetalles}">
+                            <f:convertNumber type="currency" />
+                        </h:outputText>
+                    </h:panelGroup>
+                </f:facet>
+            </p:dataTable>
+        </p:panel>
+
+        <div style="margin-top:15px; text-align:right;">
+            <p:commandButton value="Guardar Factura" icon="pi pi-save"
+                             action="#{facturaBean.guardarFactura()}"
+                             update="messages"
+                             styleClass="ui-button-success" />
+        </div>
+    </h:form>
+</h:body>
+</html>
